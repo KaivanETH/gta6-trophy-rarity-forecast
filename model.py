@@ -25,7 +25,7 @@ Three regimes, chosen from the case itself:
 
   trend    Reads have moved.  Fit logit(rate) against hours over the last day (or the
            whole history when shorter), extrapolate to the target, cap the move at
-           0.8 logits, shrink each trophy's move toward its tier's median and then
+           1.4 logits, shrink each trophy's move toward its tier's median and then
            keep only a fraction of it.  A trophy's own slope is noisy; the median
            slope of its tier is the cheaper estimate, and "nothing moves" is cheaper
            still on average.
@@ -321,7 +321,7 @@ class Forecaster:
 
     # -- regime 1: the documented launch republish -------------------------
 
-    def _launch_rows(self, prob, tracked_before, earned_before):
+    def _launch_rows(self, prob):
         p = self.p
         after_tracked = p["launch_after_tracked"]
         after_earned = p["launch_after_earned"]
@@ -464,7 +464,7 @@ class Forecaster:
 
         launch = self._launch_state()
         if launch is not None and launch[0] > 0.0:
-            rows = self._launch_rows(*launch)
+            rows = self._launch_rows(launch[0])
         elif not self.moved:
             rows = self._plateau_rows()
         else:
